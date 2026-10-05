@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CAFRE Dashboard — Ingestion &amp; Pipeline Control</title>
+  <meta name="description" content="CAFRE Dataset Upload, Preview, and Analysis Control Center">
+
+  <!-- Bootstrap 5 CSS & Icons via CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  
+  <!-- Custom Research CSS -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- Ambient background glow effects -->
+  <div class="bg-glow-orb orb-1"></div>
+  <div class="bg-glow-orb orb-2"></div>
+
+  <!-- Top Navigation -->
+  <nav class="navbar navbar-expand-lg cafre-nav">
+    <div class="container-fluid px-lg-4">
+      <div class="d-flex align-items-center gap-2">
+        <button id="sidebar-toggle" class="btn btn-dark btn-sm d-lg-none text-muted">
+          <i class="bi bi-list fs-5"></i>
+        </button>
+        <a class="navbar-brand d-flex align-items-center gap-2 text-white fw-bold" href="index.html">
+          <i class="bi bi-shield-check text-primary fs-4"></i>
+          <span>CAFRE</span>
+          <span class="brand-badge ms-1">DASHBOARD</span>
+        </a>
+      </div>
+
+      <div class="d-flex align-items-center gap-3">
+        <a href="index.html" class="nav-link text-muted d-none d-md-block" title="Home"><i class="bi bi-house"></i></a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- App Wrapper: Sidebar + Content -->
+  <div class="app-wrapper">
+    <!-- Sidebar -->
+    <aside class="app-sidebar">
+      <div>
+        <div class="sidebar-title">Navigation</div>
+        <a href="index.html" class="sidebar-nav-item">
+          <i class="bi bi-house-door"></i>
+          <span>Overview</span>
+        </a>
+        <a href="dashboard.html" class="sidebar-nav-item active">
+          <i class="bi bi-speedometer2"></i>
+          <span>Dataset Ingestion</span>
+        </a>
+        <a href="analysis.html" class="sidebar-nav-item">
+          <i class="bi bi-shield-check"></i>
+          <span>Fairness Metrics</span>
+        </a>
+        <a href="explainability.html" class="sidebar-nav-item">
+          <i class="bi bi-lightbulb"></i>
+          <span>Explainability</span>
+        </a>
+        <a href="report.html" class="sidebar-nav-item">
+          <i class="bi bi-file-earmark-medical"></i>
+          <span>Audit Report</span>
+        </a>
+
+        <hr class="border-secondary border-opacity-25 my-3">
+
+        <div class="sidebar-title">Pipeline Stages</div>
+        <div class="d-flex flex-column gap-1 text-muted small px-2">
+          <div><i class="bi bi-check2 text-success me-1"></i>01 Dataset Input</div>
+          <div><i class="bi bi-check2 text-success me-1"></i>02 Semantic Recog.</div>
+          <div><i class="bi bi-check2 text-success me-1"></i>03 Context Detect</div>
+          <div><i class="bi bi-check2 text-success me-1"></i>04 Context Knowledge</div>
+          <div><i class="bi bi-check2 text-success me-1"></i>05 Dynamic Planner</div>
+          <div><i class="bi bi-check2 text-success me-1"></i>06 Evidence Extractor</div>
+          <div><i class="bi bi-check2 text-success me-1"></i>07 Registered REF</div>
+          <div><i class="bi bi-check2 text-success me-1"></i>08 CRE Reasoning</div>
+          <div><i class="bi bi-check2 text-success me-1"></i>09 Agentic Loop</div>
+          <div><i class="bi bi-check2 text-success me-1"></i>10 FERC Reports</div>
+          <div><i class="bi bi-check2 text-success me-1"></i>11 Bias Mitigation</div>
+        </div>
+      </div>
+
+      <div class="p-2 rounded bg-dark border border-secondary border-opacity-25 small text-muted">
+        <div class="fw-bold text-white mb-1"><i class="bi bi-info-circle me-1 text-primary"></i>CAFRE Active</div>
+        <div>Context-Aware Fairness Reasoning Engine ready for dataset audit.</div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="app-content">
+      <!-- Header Banner -->
+      <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-4">
+        <div>
+          <h2 class="fw-bold text-white mb-1">Dataset Ingestion &amp; Setup</h2>
+          <p class="text-muted mb-0">Upload custom dataset or choose an existing benchmark to launch the CAFRE pipeline.</p>
+        </div>
+        <div class="d-flex gap-2">
+          <button id="btn-quick-sample" class="btn btn-cafre-outline btn-sm">
+            <i class="bi bi-magic me-1"></i>Load Hiring Sample
+          </button>
+        </div>
+      </div>
+
+      <!-- Ingestion Source Tabs: Upload vs Sample Benchmark -->
+      <div class="card-cafre mb-4">
+        <div class="card-cafre-header">
+          <ul class="nav nav-tabs border-0 card-header-tabs" id="ingestionTabs" role="tablist">
+            <li class="nav-item">
+              <button class="nav-link active text-white" id="upload-tab" data-bs-toggle="tab" data-bs-target="#tab-upload" type="button">
+                <i class="bi bi-cloud-arrow-up me-1"></i>Upload Custom Dataset
+              </button>
+            </li>
+            <li class="nav-item">
+              <button class="nav-link text-white" id="sample-tab" data-bs-toggle="tab" data-bs-target="#tab-sample" type="button">
+                <i class="bi bi-collection me-1"></i>Benchmark Datasets
+              </button>
+            </li>
+          </ul>
+        </div>
+
+        <div class="card-cafre-body">
+          <div class="tab-content" id="ingestionTabContent">
+            <!-- TAB 1: Upload Dataset -->
+            <div class="tab-pane fade show active" id="tab-upload" role="tabpanel">
+              <div id="dropzone" class="upload-dropzone">
+                <i class="bi bi-cloud-arrow-up text-primary" style="font-size: 3rem;"></i>
+                <h5 class="fw-bold text-white mt-2 mb-1">Drag and drop your dataset here</h5>
+                <p class="text-muted small mb-3">Supports dataset files with headers up to 50MB</p>
+                <input type="file" id="file-input" accept=".csv, .xlsx, .xls" class="d-none">
+                <button type="button" class="btn btn-cafre-primary btn-sm px-3" onclick="document.getElementById('file-input').click()">
+                  <i class="bi bi-folder2-open me-1"></i>Browse Files
+                </button>
+              </div>
+
+              <!-- File details bar (shown after file selection) -->
+              <div id="file-details-bar" class="d-none mt-3 p-3 rounded bg-dark border border-secondary border-opacity-25 d-flex align-items-center justify-content-between flex-wrap gap-2">
+                <div class="d-flex align-items-center gap-2">
+                  <i class="bi bi-file-earmark-spreadsheet text-info fs-4"></i>
+                  <div>
+                    <div id="upload-filename" class="fw-bold text-white">dataset.csv</div>
+                    <div id="upload-filesize" class="text-muted small">0 KB</div>
+                  </div>
+                </div>
+                <div class="d-flex gap-2">
+                  <span id="upload-status-badge" class="badge bg-success-subtle text-success d-flex align-items-center px-2">Ready</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- TAB 2: Sample Datasets -->
+            <div class="tab-pane fade" id="tab-sample" role="tabpanel">
+              <div class="row g-3" id="sample-datasets-grid">
+                <div class="col-12 text-center py-4 text-muted">
+                  <div class="spinner-border spinner-border-sm text-primary me-2" role="status"></div>
+                  Loading benchmark datasets...
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dataset Statistics Summary Row (Initially Hidden until selected) -->
+      <div id="dataset-summary-row" class="row g-3 mb-4 d-none">
+        <div class="col-md-3 col-6">
+          <div class="stat-card">
+            <div class="stat-label">
+              <span>Total Rows</span>
+              <i class="bi bi-list-ol text-primary"></i>
+            </div>
+            <div id="stat-rows" class="stat-value">0</div>
+            <div class="stat-subtext">Observations</div>
+          </div>
+        </div>
+
+        <div class="col-md-3 col-6">
+          <div class="stat-card">
+            <div class="stat-label">
+              <span>Total Columns</span>
+              <i class="bi bi-columns text-cyan-accent"></i>
+            </div>
+            <div id="stat-cols" class="stat-value">0</div>
+            <div class="stat-subtext">Features &amp; Outcomes</div>
+          </div>
+        </div>
+
+        <div class="col-md-3 col-6">
+          <div class="stat-card">
+            <div class="stat-label">
+              <span>File Size</span>
+              <i class="bi bi-hdd text-info"></i>
+            </div>
+            <div id="stat-size" class="stat-value">0 KB</div>
+            <div class="stat-subtext">In-memory buffer</div>
+          </div>
+        </div>
+
+        <div class="col-md-3 col-6">
+          <div class="stat-card">
+            <div class="stat-label">
+              <span>Missing Values</span>
+              <i class="bi bi-patch-question text-warning"></i>
+            </div>
+            <div id="stat-missing" class="stat-value">0%</div>
+            <div class="stat-subtext">Dataset completeness</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dataset Tabular Preview Card -->
+      <div id="dataset-preview-card" class="card-cafre mb-4 d-none">
+        <div class="card-cafre-header">
+          <div class="d-flex align-items-center gap-2">
+            <i class="bi bi-table text-primary"></i>
+            <h5 class="mb-0 text-white">Dataset Preview (First 15 Rows)</h5>
+          </div>
+          <span id="preview-col-count" class="badge bg-dark border border-secondary text-muted">0 columns</span>
+        </div>
+        <div class="card-cafre-body p-0">
+          <div class="table-responsive" style="max-height: 400px;">
+            <table class="table-cafre" id="preview-table">
+              <thead>
+                <tr id="preview-table-headers"></tr>
+              </thead>
+              <tbody id="preview-table-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Analysis Execution Setup Card -->
+      <div id="analysis-setup-card" class="card-cafre mb-4 d-none">
+        <div class="card-cafre-body">
+          <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div class="text-muted">
+              <i class="bi bi-shield-lock text-primary me-1"></i>
+              CAFRE will autonomously detect target, context, and run all 11 stages.
+            </div>
+            <button id="btn-start-pipeline" class="btn btn-cafre-primary btn-lg px-4">
+              <i class="bi bi-play-circle-fill me-2"></i>Execute CAFRE Pipeline
+            </button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Real-Time Pipeline Progress Modal -->
+  <div class="modal fade" id="pipelineProgressModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title fw-bold text-white d-flex align-items-center gap-2">
+            <span class="spinner-border spinner-border-sm text-primary" role="status"></span>
+            <span>Executing CAFRE Fairness Pipeline</span>
+          </h5>
+        </div>
+        <div class="modal-body p-4">
+          <!-- Main Progress Bar -->
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <span id="modal-step-name" class="fw-semibold text-white">Initializing pipeline...</span>
+            <span id="modal-progress-percent" class="fw-bold text-primary">0%</span>
+          </div>
+          <div class="progress-cafre mb-4">
+            <div id="modal-progress-bar" class="progress-bar" style="width: 0%;"></div>
+          </div>
+
+          <!-- Live Step Badge Tracker -->
+          <div class="p-3 rounded bg-dark border border-secondary border-opacity-25 mb-3">
+            <div class="d-flex justify-content-between text-muted small mb-2">
+              <span class="fw-bold text-white">Current Stage:</span>
+              <span id="modal-step-counter">Step 0/11</span>
+            </div>
+            <div id="modal-substep-desc" class="text-info small">Preparing in-memory models and ontology...</div>
+          </div>
+
+          <!-- Live Terminal Output -->
+          <div class="terminal-box" id="modal-terminal-logs">
+            <div class="terminal-line text-muted">[System] Ready to capture execution logs...</div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button id="btn-view-results" class="btn btn-cafre-primary d-none" onclick="window.location.href='analysis.html'">
+            <i class="bi bi-arrow-right-circle me-1"></i>View Full Analysis &amp; Reports
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap 5 JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/dashboard.js"></script>
+</body>
+</html>

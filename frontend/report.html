@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CAFRE Audit Report — Fairness Verdict &amp; Bias Mitigation</title>
+  <meta name="description" content="CAFRE Executive Fairness Audit Report and Actionable Bias Mitigation Strategies">
+
+  <!-- Bootstrap 5 CSS & Icons via CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  
+  <!-- Custom Research Platform CSS -->
+  <link rel="stylesheet" href="css/style.css">
+  
+  <!-- Marked.js via CDN for formatted Markdown preview -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+  <!-- Ambient background glow effects -->
+  <div class="bg-glow-orb orb-1"></div>
+  <div class="bg-glow-orb orb-2"></div>
+
+  <!-- Top Navigation -->
+  <nav class="navbar navbar-expand-lg cafre-nav">
+    <div class="container-fluid px-lg-4">
+      <div class="d-flex align-items-center gap-2">
+        <button id="sidebar-toggle" class="btn btn-dark btn-sm d-lg-none text-muted">
+          <i class="bi bi-list fs-5"></i>
+        </button>
+        <a class="navbar-brand d-flex align-items-center gap-2 text-white fw-bold" href="index.html">
+          <i class="bi bi-shield-check text-primary fs-4"></i>
+          <span>CAFRE</span>
+        </a>
+      </div>
+
+      <div class="d-flex align-items-center gap-2">
+        <button id="btn-download-md" class="btn btn-cafre-outline btn-sm" disabled style="opacity: 0.5; cursor: not-allowed;">
+          <i class="bi bi-markdown me-1"></i>Download .MD
+        </button>
+        <button id="btn-print" class="btn btn-cafre-primary btn-sm" disabled style="opacity: 0.5; cursor: not-allowed;">
+          <i class="bi bi-printer me-1"></i>Print / PDF
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- App Wrapper: Sidebar + Content -->
+  <div class="app-wrapper">
+    <!-- Sidebar -->
+    <aside class="app-sidebar">
+      <div>
+        <div class="sidebar-title">Navigation</div>
+        <a href="index.html" class="sidebar-nav-item">
+          <i class="bi bi-house-door"></i>
+          <span>Overview</span>
+        </a>
+        <a href="dashboard.html" class="sidebar-nav-item">
+          <i class="bi bi-speedometer2"></i>
+          <span>Dataset Ingestion</span>
+        </a>
+        <a href="analysis.html" class="sidebar-nav-item">
+          <i class="bi bi-shield-check"></i>
+          <span>Fairness Metrics</span>
+        </a>
+        <a href="explainability.html" class="sidebar-nav-item">
+          <i class="bi bi-lightbulb"></i>
+          <span>Explainability</span>
+        </a>
+        <a href="report.html" class="sidebar-nav-item active">
+          <i class="bi bi-file-earmark-medical"></i>
+          <span>Audit Report</span>
+        </a>
+
+        <hr class="border-secondary border-opacity-25 my-3">
+
+        <div class="sidebar-title">Report Sections</div>
+        <a href="#section-verdict" class="sidebar-nav-item small py-1">
+          <i class="bi bi-award text-primary"></i> Executive Verdict
+        </a>
+        <a href="#section-mitigation" class="sidebar-nav-item small py-1">
+          <i class="bi bi-bandaid text-success"></i> Bias Mitigations
+        </a>
+        <a href="#section-markdown-preview" class="sidebar-nav-item small py-1">
+          <i class="bi bi-file-text text-info"></i> FERC Markdown Doc
+        </a>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="app-content">
+      <!-- Empty State Warning if no analysis run yet -->
+      <div id="no-report-alert" class="alert alert-warning border border-warning-subtle d-none mb-4">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+          <div class="d-flex align-items-center gap-2">
+            <i class="bi bi-exclamation-triangle-fill fs-4"></i>
+            <div>
+              <div class="fw-bold">No active audit report available in memory.</div>
+              <div class="small text-muted">Run an analysis in the Ingestion Dashboard to generate your report.</div>
+            </div>
+          </div>
+          <a href="dashboard.html" class="btn btn-warning btn-sm fw-bold">
+            <i class="bi bi-play-fill me-1"></i>Go to Dashboard
+          </a>
+        </div>
+      </div>
+
+      <!-- Printable Report Container -->
+      <div id="cafre-printable-report">
+        <!-- Print-only Report Header -->
+        <div class="print-only-header d-none">
+          <div class="d-flex align-items-center justify-content-between pb-3 mb-3 border-bottom border-dark">
+            <div>
+              <h2 class="fw-bold mb-0 text-dark">CAFRE — Explainable Fairness Audit Report</h2>
+              <div class="text-secondary small">Domain-Aware AI Bias Detection, Reasoning, and Mitigation</div>
+            </div>
+            <div class="text-end text-secondary small">
+              <div><strong>Status:</strong> <span id="print-verdict-status">Verified Audit</span></div>
+              <div><strong>Generated:</strong> <span id="print-timestamp"></span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Header Section -->
+        <div id="section-verdict" class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-4">
+        <div>
+          <div class="d-flex align-items-center gap-2 mb-1">
+            <h2 class="fw-bold text-white mb-0">Explainable Fairness Audit Report</h2>
+            <span class="badge bg-success-subtle text-success border border-success-subtle">FERC ENGINE</span>
+          </div>
+          <p class="text-muted mb-0">
+            Comprehensive audit findings, legal boundaries, and tailored python mitigation code.
+          </p>
+        </div>
+      </div>
+
+      <!-- Executive Verdict Banner Card -->
+      <div class="card-cafre mb-4">
+        <div class="card-cafre-body p-4">
+          <div class="row align-items-center g-3">
+            <div class="col-lg-8">
+              <div class="d-flex align-items-start gap-3">
+                <div id="verdict-icon-container" class="p-3 rounded-circle bg-danger-subtle text-danger fs-2 flex-shrink-0">
+                  <i class="bi bi-shield-x"></i>
+                </div>
+                <div>
+                  <div class="d-flex align-items-center gap-2 mb-1">
+                    <h4 id="verdict-title" class="fw-bold text-white mb-0">Critical Bias Risks Detected</h4>
+                    <span id="verdict-badge" class="badge badge-cafre-high">HIGH RISK</span>
+                  </div>
+                  <p id="verdict-desc" class="text-muted mb-2">
+                    Disparate Impact ratio anomalies flagged in protected demographic groups. Immediate corrective preprocessing or in-processing mitigation is advised prior to production model training.
+                  </p>
+                  <div class="d-flex flex-wrap gap-2 text-muted small">
+                    <span class="badge bg-dark border border-secondary"><i class="bi bi-folder me-1"></i>Dataset: <span id="verdict-dataset" class="text-white">dataset.csv</span></span>
+                    <span class="badge bg-dark border border-secondary"><i class="bi bi-radar me-1"></i>Domain: <span id="verdict-domain" class="text-white">Hiring</span></span>
+                    <span class="badge bg-dark border border-secondary"><i class="bi bi-bullseye me-1"></i>Outcome: <span id="verdict-target" class="text-white">income</span></span>
+                    <span class="badge bg-dark border border-secondary"><i class="bi bi-stopwatch me-1"></i>Execution: <span id="verdict-time" class="text-white">0s</span></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-4 border-start border-secondary border-opacity-25 ps-lg-4 mt-3 mt-lg-0">
+              <h6 class="fw-bold text-white small mb-2">Audit Compliance Summary</h6>
+              <div class="d-flex justify-content-between text-muted small py-1 border-bottom border-secondary border-opacity-10">
+                <span>Features Audited:</span>
+                <span id="summary-feat-count" class="fw-bold text-white">0</span>
+              </div>
+              <div class="d-flex justify-content-between text-muted small py-1 border-bottom border-secondary border-opacity-10">
+                <span>High Risk Columns:</span>
+                <span id="summary-high-count" class="fw-bold text-danger">0</span>
+              </div>
+              <div class="d-flex justify-content-between text-muted small py-1 border-bottom border-secondary border-opacity-10">
+                <span>EEOC 4/5ths Anomalies:</span>
+                <span id="summary-ref-count" class="fw-bold text-warning">0</span>
+              </div>
+              <div class="d-flex justify-content-between text-muted small py-1">
+                <span>Mitigation Strategies:</span>
+                <span id="summary-mit-count" class="fw-bold text-success">0 Generated</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 2: Bias Mitigation Engine (Beta Advisory) -->
+      <div id="section-mitigation" class="card-cafre mb-4">
+        <div class="card-cafre-header">
+          <div class="d-flex align-items-center gap-2">
+            <i class="bi bi-bandaid text-success fs-5"></i>
+            <div>
+              <h5 class="mb-0 text-white">Bias Mitigation Engine (Beta Advisory)</h5>
+              <div class="text-muted small">Prioritized, domain-aware preprocessing, in-processing, and post-processing mitigation snippets</div>
+            </div>
+          </div>
+          <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-1">Step 11 of 11</span>
+        </div>
+        <div class="card-cafre-body">
+          <div id="mitigation-cards-container">
+            <div class="text-muted small py-3 text-center">Loading mitigation strategies...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 3: Complete FERC Markdown Report Viewer -->
+      <div id="section-markdown-preview" class="card-cafre mb-4">
+        <div class="card-cafre-header">
+          <div class="d-flex align-items-center gap-2">
+            <i class="bi bi-markdown text-info fs-5"></i>
+            <div>
+              <h5 class="mb-0 text-white">Generated FERC Markdown Audit Report</h5>
+              <div class="text-muted small">Standardized human-readable audit file stored on server disk</div>
+            </div>
+          </div>
+          <button class="btn btn-cafre-outline btn-sm" onclick="copyReportText('md-report-pre')">
+            <i class="bi bi-clipboard me-1"></i>Copy Markdown
+          </button>
+        </div>
+        <div class="card-cafre-body p-0">
+          <div class="ferc-markdown-container" id="md-report-container">
+            <div id="md-report-rendered"></div>
+            <pre id="md-report-pre" class="d-none"></pre>
+          </div>
+        </div>
+      </div>
+      </div><!-- End cafre-printable-report -->
+    </main>
+  </div>
+
+  <!-- Bootstrap 5 JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/report.js"></script>
+</body>
+</html>

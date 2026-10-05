@@ -6,3 +6,7 @@ pydantic
 sentence-transformers
 ollama
 openpyxl
+fastapi
+uvicorn
+python-multipart
+xlrd

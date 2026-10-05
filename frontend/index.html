@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CAFRE — Context-Aware Fairness Reasoning Engine</title>
+  <meta name="description" content="Domain-Aware AI Bias Detection, Reasoning, and Mitigation Platform">
+  
+  <!-- Bootstrap 5 CSS & Icons via CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  
+  <!-- Custom Research Platform CSS -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- Ambient background glow effects -->
+  <div class="bg-glow-orb orb-1"></div>
+  <div class="bg-glow-orb orb-2"></div>
+
+  <!-- Top Navigation -->
+  <nav class="navbar navbar-expand-lg cafre-nav">
+    <div class="container-fluid px-lg-4">
+      <a class="navbar-brand d-flex align-items-center gap-2 text-white fw-bold" href="index.html">
+        <i class="bi bi-shield-check text-primary fs-4"></i>
+        <span>CAFRE</span>
+        <span class="brand-badge ms-1">v1.0 RESEARCH</span>
+      </a>
+
+      <button class="navbar-toggler border-0 text-white" type="button" data-bs-toggle="collapse" data-bs-target="#topNav">
+        <i class="bi bi-list fs-3"></i>
+      </button>
+
+      <div class="collapse navbar-collapse" id="topNav">
+        <ul class="navbar-nav ms-auto align-items-center gap-2">
+          <li class="nav-item"><a class="nav-link active" href="index.html"><i class="bi bi-house me-1"></i>Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="dashboard.html"><i class="bi bi-speedometer2 me-1"></i>Dashboard</a></li>
+          <li class="nav-item"><a class="nav-link" href="analysis.html"><i class="bi bi-shield-check me-1"></i>Fairness Metrics</a></li>
+          <li class="nav-item"><a class="nav-link" href="explainability.html"><i class="bi bi-lightbulb me-1"></i>Explainability</a></li>
+          <li class="nav-item"><a class="nav-link" href="report.html"><i class="bi bi-file-earmark-medical me-1"></i>Audit Report</a></li>
+          <li class="nav-item ms-lg-2">
+            <a href="dashboard.html" class="btn btn-cafre-primary btn-sm px-3">
+              <i class="bi bi-play-circle-fill me-1"></i>Start Analysis
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <header class="hero-wrapper container">
+    <h1 class="hero-title">Context-Aware Fairness<br>Reasoning Engine</h1>
+    <p class="hero-subtitle">
+      Domain-Aware AI Bias Detection, Reasoning and Mitigation. 
+      CAFRE unifies legal boundaries, semantic ontologies, and empirical evidence to audit tabular datasets and ML models without black-box guessing.
+    </p>
+
+    <div class="d-flex justify-content-center align-items-center gap-3 flex-wrap">
+      <a href="dashboard.html" class="btn btn-cafre-primary btn-lg px-4 py-3">
+        <i class="bi bi-play-fill fs-5 me-1"></i>Start Analysis
+      </a>
+      <a href="#pipeline-section" class="btn btn-cafre-outline btn-lg px-4 py-3">
+        <i class="bi bi-diagram-3 me-1"></i>Explore Pipeline
+      </a>
+    </div>
+  </header>
+
+  <!-- Visual Representation of CAFRE Pipeline -->
+  <section id="pipeline-section" class="container my-5">
+    <div class="card-cafre p-4">
+      <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+        <div>
+          <h4 class="fw-bold mb-1 text-white"><i class="bi bi-cpu text-primary me-2"></i>End-to-End CAFRE Pipeline</h4>
+          <p class="text-muted small mb-0">Visual representation of the 10 interconnected cognitive stages</p>
+        </div>
+        <span class="badge bg-dark border border-secondary px-3 py-2 text-info">
+          <i class="bi bi-lightning-charge me-1"></i>Autonomous Multi-Engine Flow
+        </span>
+      </div>
+
+      <!-- Connected Pipeline Nodes Flow -->
+      <div class="pipeline-flow-container">
+        <!-- 1. Dataset -->
+        <div class="pipeline-node">
+          <div class="node-num">01</div>
+          <i class="bi bi-file-earmark-spreadsheet node-icon text-info"></i>
+          <div class="node-title">Dataset Input</div>
+        </div>
+
+        <div class="pipeline-arrow"><i class="bi bi-chevron-right"></i></div>
+
+        <!-- 2. Semantic Recognition -->
+        <div class="pipeline-node">
+          <div class="node-num">02</div>
+          <i class="bi bi-tags node-icon text-primary"></i>
+          <div class="node-title">Semantic Recognition</div>
+        </div>
+
+        <div class="pipeline-arrow"><i class="bi bi-chevron-right"></i></div>
+
+        <!-- 3. Context Detection -->
+        <div class="pipeline-node">
+          <div class="node-num">03</div>
+          <i class="bi bi-radar node-icon text-warning"></i>
+          <div class="node-title">Context Detection</div>
+        </div>
+
+        <div class="pipeline-arrow"><i class="bi bi-chevron-right"></i></div>
+
+        <!-- 4. Context Knowledge -->
+        <div class="pipeline-node">
+          <div class="node-num">04</div>
+          <i class="bi bi-journal-bookmark node-icon text-success"></i>
+          <div class="node-title">Context Knowledge</div>
+        </div>
+
+        <div class="pipeline-arrow"><i class="bi bi-chevron-right"></i></div>
+
+        <!-- 5. Investigation Planning -->
+        <div class="pipeline-node">
+          <div class="node-num">05</div>
+          <i class="bi bi-clipboard-data node-icon text-danger"></i>
+          <div class="node-title">Investigation Planning</div>
+        </div>
+
+        <div class="pipeline-arrow"><i class="bi bi-chevron-right"></i></div>
+
+        <!-- 6. Fairness Evidence -->
+        <div class="pipeline-node">
+          <div class="node-num">06</div>
+          <i class="bi bi-graph-up-arrow node-icon text-info"></i>
+          <div class="node-title">Fairness Evidence</div>
+        </div>
+
+        <div class="pipeline-arrow"><i class="bi bi-chevron-right"></i></div>
+
+        <!-- 7. Context-Aware Reasoning -->
+        <div class="pipeline-node">
+          <div class="node-num">07</div>
+          <i class="bi bi-brain node-icon text-primary"></i>
+          <div class="node-title">Context Reasoning</div>
+        </div>
+
+        <div class="pipeline-arrow"><i class="bi bi-chevron-right"></i></div>
+
+        <!-- 8. Explainability -->
+        <div class="pipeline-node">
+          <div class="node-num">08</div>
+          <i class="bi bi-chat-square-quote node-icon text-warning"></i>
+          <div class="node-title">FERC Explainability</div>
+        </div>
+
+        <div class="pipeline-arrow"><i class="bi bi-chevron-right"></i></div>
+
+        <!-- 9. Bias Mitigation -->
+        <div class="pipeline-node">
+          <div class="node-num">09</div>
+          <i class="bi bi-bandaid node-icon text-success"></i>
+          <div class="node-title">Bias Mitigation</div>
+        </div>
+
+        <div class="pipeline-arrow"><i class="bi bi-chevron-right"></i></div>
+
+        <!-- 10. Final Report -->
+        <div class="pipeline-node">
+          <div class="node-num">10</div>
+          <i class="bi bi-file-earmark-check node-icon text-primary"></i>
+          <div class="node-title">Final Report</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Preloaded Benchmark Datasets Callout -->
+  <section class="container my-5">
+    <div class="card-cafre p-4">
+      <div class="row align-items-center">
+        <div class="col-lg-8">
+          <h4 class="fw-bold text-white mb-2"><i class="bi bi-database-check text-info me-2"></i>Benchmark Datasets Ready for Evaluation</h4>
+          <p class="text-muted mb-0">
+            Test CAFRE immediately with pre-packaged datasets: AI Hiring Audit, Biased Training/Test distributions, and Credit Risk portfolios. Or upload your own custom dataset in one click.
+          </p>
+        </div>
+        <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
+          <a href="dashboard.html" class="btn btn-cafre-primary px-4 py-2">
+            <i class="bi bi-upload me-1"></i>Open Ingestion Dashboard
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="border-top border-secondary border-opacity-25 py-4 mt-5 text-center text-muted small">
+    <div class="container">
+      <p class="mb-1">CAFRE — Context-Aware Fairness Reasoning Engine</p>
+      <p class="mb-0 text-dim">AI Bias Detection &amp; Explainability Research Platform</p>
+    </div>
+  </footer>
+
+  <!-- Bootstrap 5 JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

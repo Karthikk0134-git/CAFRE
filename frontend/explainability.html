@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CAFRE — Model Explainability</title>
+  <meta name="description" content="Human-readable model explainability, feature contributions, and technical metrics.">
+
+  <!-- Bootstrap 5 CSS & Icons via CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  
+  <!-- Chart.js via CDN for interactive visualizations -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+
+  <!-- Custom Research Platform CSS -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- Ambient background glow effects -->
+  <div class="bg-glow-orb orb-1"></div>
+  <div class="bg-glow-orb orb-2"></div>
+
+  <!-- Top Navigation -->
+  <nav class="navbar navbar-expand-lg cafre-nav">
+    <div class="container-fluid px-lg-4">
+      <div class="d-flex align-items-center gap-2">
+        <button id="sidebar-toggle" class="btn btn-dark btn-sm d-lg-none text-muted">
+          <i class="bi bi-list fs-5"></i>
+        </button>
+        <a class="navbar-brand d-flex align-items-center gap-2 text-white fw-bold" href="index.html">
+          <i class="bi bi-shield-check text-primary fs-4"></i>
+          <span>CAFRE</span>
+          <span class="brand-badge ms-1">EXPLAINABILITY</span>
+        </a>
+      </div>
+
+      <div class="d-flex align-items-center gap-3">
+        <span id="active-dataset-badge" class="badge bg-dark border border-secondary px-3 py-2 text-info d-none d-md-inline-block">
+          <i class="bi bi-file-earmark-spreadsheet me-1"></i><span id="nav-dataset-name">dataset.csv</span>
+        </span>
+        <a href="analysis.html" class="btn btn-cafre-outline btn-sm px-3">
+          <i class="bi bi-shield-check me-1"></i>Fairness Metrics
+        </a>
+        <a href="report.html" class="btn btn-cafre-primary btn-sm px-3">
+          <i class="bi bi-file-earmark-medical me-1"></i>Audit Report
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- App Wrapper: Sidebar + Content -->
+  <div class="app-wrapper">
+    <!-- Sidebar -->
+    <aside class="app-sidebar">
+      <div>
+        <div class="sidebar-title">Navigation</div>
+        <a href="index.html" class="sidebar-nav-item">
+          <i class="bi bi-house-door"></i>
+          <span>Overview</span>
+        </a>
+        <a href="dashboard.html" class="sidebar-nav-item">
+          <i class="bi bi-speedometer2"></i>
+          <span>Dataset Ingestion</span>
+        </a>
+        <a href="analysis.html" class="sidebar-nav-item">
+          <i class="bi bi-shield-check"></i>
+          <span>Fairness Metrics</span>
+        </a>
+        <a href="explainability.html" class="sidebar-nav-item active">
+          <i class="bi bi-lightbulb"></i>
+          <span>Explainability</span>
+        </a>
+        <a href="report.html" class="sidebar-nav-item">
+          <i class="bi bi-file-earmark-medical"></i>
+          <span>Audit Report</span>
+        </a>
+      </div>
+
+      <div class="p-2 rounded bg-dark border border-secondary border-opacity-25 small text-muted mt-4">
+        <div class="fw-bold text-white mb-1"><i class="bi bi-lightbulb text-primary me-1"></i>Explainability</div>
+        <div>Human-readable explanations synthesized from empirical SHAP and semantic reasoning.</div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="app-content">
+      <!-- Empty State Warning if no analysis run yet -->
+      <div id="no-analysis-alert" class="alert alert-warning border border-warning-subtle d-none mb-4">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+          <div class="d-flex align-items-center gap-2">
+            <i class="bi bi-exclamation-triangle-fill fs-4"></i>
+            <div>
+              <div class="fw-bold">No active analysis session found in memory.</div>
+              <div class="small text-muted">Run a pipeline audit on the Ingestion Dashboard or load sample audit data.</div>
+            </div>
+          </div>
+          <div class="d-flex gap-2">
+            <button id="btn-load-demo" class="btn btn-warning btn-sm fw-bold">
+              <i class="bi bi-lightning-charge-fill me-1"></i>Load Sample Audit
+            </button>
+            <a href="dashboard.html" class="btn btn-cafre-outline btn-sm">
+              <i class="bi bi-play-fill me-1"></i>Go to Ingestion
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Page Header -->
+      <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-4">
+        <div>
+          <h2 class="fw-bold text-white mb-1">Model Explainability</h2>
+          <p class="text-muted mb-0">Understand which factors drive the model's predictions.</p>
+        </div>
+        <div class="d-flex gap-2">
+          <a href="analysis.html" class="btn btn-cafre-outline btn-sm">
+            <i class="bi bi-shield-check me-1"></i>Fairness Metrics
+          </a>
+          <a href="report.html" class="btn btn-cafre-primary btn-sm">
+            <i class="bi bi-file-earmark-medical me-1"></i>Audit Report
+          </a>
+        </div>
+      </div>
+
+      <!-- Main Explainability Card -->
+      <div class="card-cafre mb-4">
+        <div class="card-cafre-header">
+          <div class="d-flex align-items-center gap-2">
+            <i class="bi bi-lightbulb text-primary fs-5"></i>
+            <div>
+              <h5 class="mb-0 text-white">Model Decision Breakdown</h5>
+              <div class="text-muted small">Understand what factors most heavily influence predictions</div>
+            </div>
+          </div>
+          <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-1">
+            <i class="bi bi-check-circle me-1"></i>Decision Attribution
+          </span>
+        </div>
+        <div class="card-cafre-body">
+
+          <!-- 1. LEVEL 1: HUMAN-READABLE EXPLANATION (SHOWN FIRST) -->
+          <div class="human-explanation-box mb-4" id="human-explanation-card">
+            <div class="d-flex align-items-center gap-2 mb-2">
+              <i class="bi bi-chat-heart text-primary fs-5"></i>
+              <h6 class="human-headline mb-0">Why did the model make this decision?</h6>
+            </div>
+            
+            <p class="human-body-text fs-6 mb-3" id="explainability-human-explanation">
+              Evaluating feature influence on model predictions...
+            </p>
+
+            <!-- Key Decision Drivers Pill Summary -->
+            <div class="d-flex flex-wrap align-items-center gap-2 mb-3" id="explainability-drivers-pills">
+              <!-- Dynamically populated driver badges -->
+            </div>
+
+            <!-- Plain-English Key Takeaways Cards -->
+            <div class="human-takeaways-grid" id="explainability-takeaways-grid">
+              <!-- Dynamically populated: Primary Driver, Secondary Drivers, Fairness Check -->
+            </div>
+          </div>
+
+          <hr class="border-secondary border-opacity-25 my-4">
+
+          <!-- 2. LEVEL 2: FEATURE CONTRIBUTION VISUALIZATION (GRAPH / CHART) -->
+          <div class="mb-4">
+            <div class="chart-controls-wrapper">
+              <div>
+                <h6 class="fw-bold text-white mb-1">Feature Contribution to Predictions</h6>
+                <p class="text-muted small mb-0">Visual ranking of factors by their impact on model decisions</p>
+              </div>
+              
+              <!-- Filter Controls: Top 5, Top 10, All -->
+              <div class="d-flex align-items-center gap-1" id="chart-filter-controls">
+                <span class="text-muted small me-1">Show:</span>
+                <button type="button" class="btn-chart-filter active" data-filter="top5">Top 5</button>
+                <button type="button" class="btn-chart-filter" data-filter="top8">Top 8</button>
+                <button type="button" class="btn-chart-filter" data-filter="all">All Features</button>
+              </div>
+            </div>
+
+            <!-- Chart.js Canvas -->
+            <div style="height: 270px; position: relative;" class="mb-2">
+              <canvas id="featureContributionChart"></canvas>
+            </div>
+            
+            <div class="d-flex align-items-center justify-content-between text-muted small mt-2">
+              <span id="explainability-chart-caption">
+                <i class="bi bi-info-circle me-1"></i>Longer bars indicate features that contributed more strongly toward the model's prediction.
+              </span>
+              <span class="text-dim font-monospace small" id="chart-total-features-count"></span>
+            </div>
+
+            <!-- Top Driver Cards Grid (Clean, visual representation for non-technical users) -->
+            <div class="mt-4">
+              <h6 class="fw-bold text-white small mb-3">Key Factors Breakdown</h6>
+              <div class="driver-cards-container" id="driver-cards-container">
+                <!-- Dynamically populated driver cards with progress bars and plain-English roles -->
+              </div>
+            </div>
+          </div>
+
+          <hr class="border-secondary border-opacity-25 my-4">
+
+          <!-- 3. LEVEL 3: EXPANDABLE "VIEW TECHNICAL DETAILS" SECTION -->
+          <div>
+            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+              <div>
+                <h6 class="fw-bold text-white small mb-1">Technical Transparency</h6>
+                <p class="text-muted small mb-0">Detailed statistical attributions, SHAP values, mutual information, and evidence fusion</p>
+              </div>
+              <button class="btn btn-toggle-expand" type="button" data-bs-toggle="collapse" data-bs-target="#technical-details-panel" aria-expanded="false" id="btn-toggle-tech-details">
+                <i class="bi bi-code-slash text-primary"></i>
+                <span id="tech-details-btn-text">View Technical Details</span>
+                <i class="bi bi-chevron-down chevron-icon" id="tech-caret"></i>
+              </button>
+            </div>
+
+            <div class="collapse mt-3" id="technical-details-panel">
+              <div class="technical-details-panel">
+                <!-- Technical Primer Cards -->
+                <div class="metric-primer-container">
+                  <div class="metric-primer-card">
+                    <span class="metric-primer-badge">SHAP IMPACT</span>
+                    <div class="metric-primer-name">Predictive Impact</div>
+                    <div class="metric-primer-formula">&phi;<sub>i</sub>(x) &isin; [0, 1]</div>
+                    <p class="metric-primer-text">Game-theoretic Shapley value measuring each feature's marginal contribution to predictions.</p>
+                  </div>
+                  <div class="metric-primer-card">
+                    <span class="metric-primer-badge">DEPENDENCY</span>
+                    <div class="metric-primer-name">Mutual Information</div>
+                    <div class="metric-primer-formula">I(X; Y) &ge; 0</div>
+                    <p class="metric-primer-text">Quantifies non-linear statistical correlation and shared information between feature and target outcome.</p>
+                  </div>
+                  <div class="metric-primer-card">
+                    <span class="metric-primer-badge">CERTAINTY</span>
+                    <div class="metric-primer-name">Confidence Score</div>
+                    <div class="metric-primer-formula">Conf &isin; [0, 100]%</div>
+                    <p class="metric-primer-text">Degree of statistical certainty based on sample size, missingness, and distribution stability.</p>
+                  </div>
+                  <div class="metric-primer-card">
+                    <span class="metric-primer-badge">CRE FUSION</span>
+                    <div class="metric-primer-name">Evidence Scores</div>
+                    <div class="metric-primer-formula">Base &bull; Stat &bull; Final</div>
+                    <p class="metric-primer-text">Tri-partite score: Ontological base domain score, empirical statistical evidence, and fused final score.</p>
+                  </div>
+                </div>
+
+                <!-- Table Header with Search Filter -->
+                <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+                  <div class="d-flex align-items-center gap-2">
+                    <i class="bi bi-table text-primary"></i>
+                    <h6 class="fw-bold text-white small mb-0">Feature Evidence &amp; Attributions Table</h6>
+                  </div>
+                  <div class="d-flex align-items-center gap-2">
+                    <input type="text" id="tech-feature-search" class="form-control form-control-sm bg-dark text-white border-secondary" placeholder="Filter features..." style="max-width: 180px;">
+                  </div>
+                </div>
+
+                <div class="table-responsive">
+                  <table class="table-cafre mb-0" id="technical-details-table">
+                    <thead>
+                      <tr>
+                        <th>Feature</th>
+                        <th>Semantic Role</th>
+                        <th>SHAP Impact</th>
+                        <th>Mutual Information</th>
+                        <th>Confidence</th>
+                        <th>Evidence Scores (Base / Stat / Final)</th>
+                        <th>Status</th>
+                      </tr>
+                    </thead>
+                    <tbody id="technical-details-tbody">
+                      <!-- Dynamically populated from backend data -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Bootstrap 5 JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/explainability.js"></script>
+</body>
+</html>

@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CAFRE — Fairness Metrics</title>
+  <meta name="description" content="Human-readable fairness assessment, group disparity visualization, and detailed metrics.">
+
+  <!-- Bootstrap 5 CSS & Icons via CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+
+  <!-- Custom Research Platform CSS -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- Ambient background glow effects -->
+  <div class="bg-glow-orb orb-1"></div>
+  <div class="bg-glow-orb orb-2"></div>
+
+  <!-- Top Navigation -->
+  <nav class="navbar navbar-expand-lg cafre-nav">
+    <div class="container-fluid px-lg-4">
+      <div class="d-flex align-items-center gap-2">
+        <button id="sidebar-toggle" class="btn btn-dark btn-sm d-lg-none text-muted">
+          <i class="bi bi-list fs-5"></i>
+        </button>
+        <a class="navbar-brand d-flex align-items-center gap-2 text-white fw-bold" href="index.html">
+          <i class="bi bi-shield-check text-primary fs-4"></i>
+          <span>CAFRE</span>
+          <span class="brand-badge ms-1">FAIRNESS METRICS</span>
+        </a>
+      </div>
+
+      <div class="d-flex align-items-center gap-3">
+        <span id="active-dataset-badge" class="badge bg-dark border border-secondary px-3 py-2 text-info d-none d-md-inline-block">
+          <i class="bi bi-file-earmark-spreadsheet me-1"></i><span id="nav-dataset-name">dataset.csv</span>
+        </span>
+        <a href="explainability.html" class="btn btn-cafre-outline btn-sm px-3">
+          <i class="bi bi-lightbulb me-1"></i>Model Explainability
+        </a>
+        <a href="report.html" class="btn btn-cafre-primary btn-sm px-3">
+          <i class="bi bi-file-earmark-medical me-1"></i>Audit Report
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- App Wrapper: Sidebar + Content -->
+  <div class="app-wrapper">
+    <!-- Sidebar -->
+    <aside class="app-sidebar">
+      <div>
+        <div class="sidebar-title">Navigation</div>
+        <a href="index.html" class="sidebar-nav-item">
+          <i class="bi bi-house-door"></i>
+          <span>Overview</span>
+        </a>
+        <a href="dashboard.html" class="sidebar-nav-item">
+          <i class="bi bi-speedometer2"></i>
+          <span>Dataset Ingestion</span>
+        </a>
+        <a href="analysis.html" class="sidebar-nav-item active">
+          <i class="bi bi-shield-check"></i>
+          <span>Fairness Metrics</span>
+        </a>
+        <a href="explainability.html" class="sidebar-nav-item">
+          <i class="bi bi-lightbulb"></i>
+          <span>Explainability</span>
+        </a>
+        <a href="report.html" class="sidebar-nav-item">
+          <i class="bi bi-file-earmark-medical"></i>
+          <span>Audit Report</span>
+        </a>
+      </div>
+
+      <div class="p-2 rounded bg-dark border border-secondary border-opacity-25 small text-muted mt-4">
+        <div class="fw-bold text-white mb-1"><i class="bi bi-shield-check text-primary me-1"></i>Fairness Standard</div>
+        <div>Assessed against standard legal four-fifths (80%) rules and demographic parity criteria.</div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="app-content">
+      <!-- Empty State Warning if no analysis run yet -->
+      <div id="no-analysis-alert" class="alert alert-warning border border-warning-subtle d-none mb-4">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+          <div class="d-flex align-items-center gap-2">
+            <i class="bi bi-exclamation-triangle-fill fs-4"></i>
+            <div>
+              <div class="fw-bold">No active analysis session found in memory.</div>
+              <div class="small text-muted">Run a pipeline audit on the Ingestion Dashboard or load sample audit data.</div>
+            </div>
+          </div>
+          <div class="d-flex gap-2">
+            <button id="btn-load-demo" class="btn btn-warning btn-sm fw-bold">
+              <i class="bi bi-lightning-charge-fill me-1"></i>Load Sample Audit
+            </button>
+            <a href="dashboard.html" class="btn btn-cafre-outline btn-sm">
+              <i class="bi bi-play-fill me-1"></i>Go to Ingestion
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Page Header -->
+      <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-4">
+        <div>
+          <h2 class="fw-bold text-white mb-1">Fairness Metrics</h2>
+          <p class="text-muted mb-0">Evaluates whether the model behaves fairly across protected demographic groups.</p>
+        </div>
+        <div class="d-flex gap-2">
+          <a href="explainability.html" class="btn btn-cafre-outline btn-sm">
+            <i class="bi bi-lightbulb me-1"></i>Model Explainability
+          </a>
+          <a href="report.html" class="btn btn-cafre-primary btn-sm">
+            <i class="bi bi-file-earmark-medical me-1"></i>Audit Report
+          </a>
+        </div>
+      </div>
+
+      <!-- Main Fairness Assessment Card -->
+      <div class="card-cafre mb-4">
+        <div class="card-cafre-header">
+          <div class="d-flex align-items-center gap-2">
+            <i class="bi bi-shield-check text-primary fs-5"></i>
+            <div>
+              <h5 class="mb-0 text-white">Fairness &amp; Demographic Parity Assessment</h5>
+              <div class="text-muted small">Evaluate selection outcomes across protected demographic groups</div>
+            </div>
+          </div>
+          <div id="overall-fairness-badge">
+            <span class="badge badge-cafre-low">Evaluating...</span>
+          </div>
+        </div>
+        <div class="card-cafre-body">
+
+          <!-- 1. LEVEL 1: EXECUTIVE VERDICT & HUMAN-READABLE EXPLANATION -->
+          <div class="human-explanation-box mb-4" id="fairness-verdict-box">
+            <div class="d-flex align-items-center gap-2 mb-2">
+              <i class="bi bi-chat-left-heart text-primary fs-5"></i>
+              <h6 class="human-headline mb-0">Fairness Summary &amp; Compliance Finding</h6>
+            </div>
+            
+            <p class="human-body-text fs-6 mb-3" id="fairness-human-explanation">
+              Evaluating demographic parity and legal fairness criteria across dataset features...
+            </p>
+
+            <!-- 3 Summary KPI Cards for Non-Technical Users -->
+            <div class="human-takeaways-grid" id="fairness-summary-kpis">
+              <!-- Dynamically populated: Overall Status, Benchmark Standard, Audited Attributes -->
+            </div>
+          </div>
+
+          <hr class="border-secondary border-opacity-25 my-4">
+
+          <!-- 2. LEVEL 2: SIMPLE, HUMAN-READABLE FAIRNESS VISUALIZATIONS -->
+          <div class="mb-4">
+            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+              <div>
+                <h6 class="fw-bold text-white mb-1">Protected Demographic Groups Comparison</h6>
+                <p class="text-muted small mb-0">Visual comparison of selection rates between reference and comparison groups</p>
+              </div>
+              <span class="badge bg-dark border border-secondary text-info">
+                <i class="bi bi-compass me-1"></i>EEOC 80% Rule Benchmark
+              </span>
+            </div>
+
+            <!-- Dynamic visual cards: one card per protected attribute with side-by-side bars + 80% gauge -->
+            <div id="fairness-visual-container" class="d-flex flex-column gap-3">
+              <!-- Dynamically populated from analysis.js -->
+            </div>
+          </div>
+
+          <hr class="border-secondary border-opacity-25 my-4">
+
+          <!-- 3. LEVEL 3: EXPANDABLE "VIEW DETAILED METRICS" SECTION (DI, DPD, EOD, EODD) -->
+          <div>
+            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+              <div>
+                <h6 class="fw-bold text-white small mb-1">Detailed Technical Metrics</h6>
+                <p class="text-muted small mb-0">Formal statistical disparities: Disparate Impact (DI), Demographic Parity Difference (DPD), Equal Opportunity (EOD), and Equalized Odds (EODD)</p>
+              </div>
+              <button class="btn btn-toggle-expand" type="button" data-bs-toggle="collapse" data-bs-target="#detailed-metrics-panel" aria-expanded="false" id="btn-toggle-detailed-metrics">
+                <i class="bi bi-sliders text-primary"></i>
+                <span id="detailed-metrics-btn-text">View Detailed Metrics (DI, DPD, EOD, EODD)</span>
+                <i class="bi bi-chevron-down chevron-icon" id="detailed-caret"></i>
+              </button>
+            </div>
+
+            <div class="collapse mt-3" id="detailed-metrics-panel">
+              <div class="technical-details-panel">
+                
+                <!-- Metric Explainer Primer Cards (DI, DPD, EOD, EODD) -->
+                <div class="metric-primer-container">
+                  <div class="metric-primer-card">
+                    <span class="metric-primer-badge">DI METRIC</span>
+                    <div class="metric-primer-name">Disparate Impact (DI)</div>
+                    <div class="metric-primer-formula">DI = Rate<sub>unpriv</sub> / Rate<sub>priv</sub></div>
+                    <p class="metric-primer-text">Ratio of positive outcomes between groups. Under EEOC guidelines, values below <strong>0.80 (80%)</strong> indicate potential adverse impact.</p>
+                  </div>
+                  <div class="metric-primer-card">
+                    <span class="metric-primer-badge">DPD METRIC</span>
+                    <div class="metric-primer-name">Demographic Parity Diff</div>
+                    <div class="metric-primer-formula">DPD = |Rate<sub>priv</sub> - Rate<sub>unpriv</sub>|</div>
+                    <p class="metric-primer-text">Absolute difference in approval probability. Ideal parity is <strong>0.00</strong>. Values exceeding <strong>0.10 - 0.20</strong> signify substantial disparity.</p>
+                  </div>
+                  <div class="metric-primer-card">
+                    <span class="metric-primer-badge">EOD METRIC</span>
+                    <div class="metric-primer-name">Equal Opportunity Diff</div>
+                    <div class="metric-primer-formula">EOD = |TPR<sub>priv</sub> - TPR<sub>unpriv</sub>|</div>
+                    <p class="metric-primer-text">Difference in True Positive Rates (TPR). Verifies whether qualified individuals from all groups enjoy an equal chance of favorable outcomes.</p>
+                  </div>
+                  <div class="metric-primer-card">
+                    <span class="metric-primer-badge">EODD METRIC</span>
+                    <div class="metric-primer-name">Equalized Odds Diff</div>
+                    <div class="metric-primer-formula">EODD = max(|&Delta;TPR|, |&Delta;FPR|)</div>
+                    <p class="metric-primer-text">Comprehensive fairness test evaluating parity across both positive error (TPR) and negative false alarm (FPR) rates between groups.</p>
+                  </div>
+                </div>
+
+                <!-- Table Header with Attribute Filter -->
+                <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+                  <div class="d-flex align-items-center gap-2">
+                    <i class="bi bi-table text-primary"></i>
+                    <h6 class="fw-bold text-white small mb-0">Standardized Statistical Fairness Table</h6>
+                  </div>
+                  <div class="d-flex align-items-center gap-2">
+                    <input type="text" id="detailed-attr-search" class="form-control form-control-sm bg-dark text-white border-secondary" placeholder="Filter attribute..." style="max-width: 180px;">
+                  </div>
+                </div>
+
+                <!-- Numerical Metrics Table: DI, DPD, EOD, EODD -->
+                <div class="table-responsive mb-4">
+                  <table class="table-cafre mb-0" id="detailed-metrics-table">
+                    <thead>
+                      <tr>
+                        <th>Protected Attribute</th>
+                        <th>Metric &amp; Abbreviation</th>
+                        <th>Numerical Value</th>
+                        <th>Standard Threshold</th>
+                        <th>Interpretation / Status</th>
+                      </tr>
+                    </thead>
+                    <tbody id="detailed-metrics-tbody">
+                      <!-- Dynamically populated with DI, DPD, EOD, EODD -->
+                    </tbody>
+                  </table>
+                </div>
+
+                <!-- Group-Level Rate & Confusion Matrix Sub-Table -->
+                <div class="d-flex align-items-center gap-2 mb-2">
+                  <i class="bi bi-pie-chart text-info"></i>
+                  <h6 class="fw-bold text-white small mb-0">Demographic Group Selection &amp; Error Rate Breakdown</h6>
+                </div>
+                <div class="table-responsive">
+                  <table class="table-cafre mb-0" id="group-breakdown-table">
+                    <thead>
+                      <tr>
+                        <th>Attribute</th>
+                        <th>Reference Group (Privileged)</th>
+                        <th>Comparison Group (Unprivileged)</th>
+                        <th>Selection Rate Ratio</th>
+                        <th>TPR Gap (True Pos)</th>
+                        <th>FPR Gap (False Pos)</th>
+                      </tr>
+                    </thead>
+                    <tbody id="group-breakdown-tbody">
+                      <!-- Dynamically populated from analysis.js -->
+                    </tbody>
+                  </table>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Bootstrap 5 JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/analysis.js"></script>
+</body>
+</html>
